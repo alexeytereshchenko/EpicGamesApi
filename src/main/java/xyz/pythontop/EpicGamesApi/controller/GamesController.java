@@ -9,7 +9,7 @@ import xyz.pythontop.EpicGamesApi.service.EpicService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/games")
+@RequestMapping("/api/epic")
 public class GamesController {
 
     private final EpicService epicService;
@@ -18,12 +18,12 @@ public class GamesController {
         this.epicService = epicService;
     }
 
-    @GetMapping
+    @GetMapping("games")
     public List<GameDto> getGames() {
         return epicService.findGames();
     }
 
-    @GetMapping("all")
+    @GetMapping("games/all")
     public List<GameDto> getAllGames() {
         return epicService.findAllGames();
     }
