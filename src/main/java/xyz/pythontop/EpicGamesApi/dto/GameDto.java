@@ -19,6 +19,8 @@ public class GameDto {
 
     private String url;
 
+    private Status status;
+
     @JsonProperty("startDate")
     private LocalDateTime startDate;
 

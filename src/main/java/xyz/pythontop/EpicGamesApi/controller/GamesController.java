@@ -20,11 +20,16 @@ public class GamesController {
 
     @GetMapping("games")
     public List<GameDto> getGames() {
-        return epicService.findGames();
+        return epicService.findAllGames();
     }
 
-    @GetMapping("games/all")
-    public List<GameDto> getAllGames() {
-        return epicService.findAllGames();
+    @GetMapping("games/active")
+    public List<GameDto> getActiveGames() {
+        return epicService.findActiveGames();
+    }
+
+    @GetMapping("games/coming-soon")
+    public List<GameDto> getAllComingSoonGames() {
+        return epicService.findComingSoonGames();
     }
 }
