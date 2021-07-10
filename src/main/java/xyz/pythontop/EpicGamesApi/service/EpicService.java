@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import xyz.pythontop.EpicGamesApi.dto.GameDto;
+import xyz.pythontop.EpicGamesApi.dto.Status;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,14 +32,19 @@ public class EpicService {
         mapper.registerModule(new JavaTimeModule());
     }
 
-    public List<GameDto> findGames() {
+    public List<GameDto> findActiveGames() {
         List<GameDto> games = findAllGames();
-        LOG.info("Games: {}", games);
         return games
                 .stream()
-                .filter(game -> game.getStartDate().isAfter(LocalDateTime.now().minusDays(7))
-                        && game.getStartDate().isBefore(LocalDateTime.now())
-                )
+                .filter(game -> game.getStatus() == Status.ACTIVE)
+                .collect(Collectors.toList());
+    }
+
+    public List<GameDto> findComingSoonGames() {
+        List<GameDto> games = findAllGames();
+        return games
+                .stream()
+                .filter(game -> game.getStatus() == Status.COMING_SOON)
                 .collect(Collectors.toList());
     }
 
@@ -55,6 +61,7 @@ public class EpicService {
                     games.add(game);
                 }
             }
+            LOG.info("Games: {}", games);
             return games;
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,6 +77,17 @@ public class EpicService {
         return GAME_URL + productSlug;
     }
 
+    private Status createStatus(LocalDateTime startDate) {
+        boolean thisWeek = startDate.isAfter(LocalDateTime.now().minusDays(7));
+        boolean currentDay = startDate.isBefore(LocalDateTime.now());
+
+        if (thisWeek && currentDay) {
+            return Status.ACTIVE;
+        } else {
+            return Status.COMING_SOON;
+        }
+    }
+
     private GameDto parseGame(JsonNode gameNode) throws JsonProcessingException {
         if (gameNode.hasNonNull("promotions")) {
             GameDto game = mapper.readValue(gameNode.toString(), GameDto.class);
@@ -81,6 +99,9 @@ public class EpicService {
             ));
             game.setStartDate(parseDate(
                     gameNode.findValue("startDate").asText()
+            ));
+            game.setStatus(createStatus(
+                    game.getStartDate()
             ));
             return game;
         }
