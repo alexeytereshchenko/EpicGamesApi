@@ -1,6 +1,6 @@
 # EpicGamesApi
 
-It is custom api for get games from Epicgames provide by https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions/ 
+It is custom api for get free games from Epicgames
 
 ### Run it with Docker:
 
