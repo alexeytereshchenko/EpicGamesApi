@@ -97,7 +97,7 @@ public class EpicService {
         );
 
         return effectiveDate.isAfter(
-                Instant.now().minusSeconds(60 * 60 * 24)  // second * minutes * days
+                Instant.now().minusSeconds(60 * 60 * 24 * 7)  // second * minutes * hours * days
         );
     }
 
