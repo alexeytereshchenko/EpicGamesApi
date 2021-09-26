@@ -12,7 +12,6 @@ import xyz.pythontop.EpicGamesApi.dto.Status;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -89,20 +88,8 @@ public class EpicService {
         }
     }
 
-    private boolean checkDate(JsonNode gameNode) {
-        if (gameNode.get("effectiveDate").isNull()) return true;
-
-        Instant effectiveDate = Instant.parse(
-                gameNode.get("effectiveDate").asText()
-        );
-
-        return effectiveDate.isAfter(
-                Instant.now().minusSeconds(60 * 60 * 24)  // second * minutes * days
-        );
-    }
-
     private GameDto parseGame(JsonNode gameNode) throws JsonProcessingException {
-        if (gameNode.hasNonNull("promotions") && checkDate(gameNode)) {
+        if (gameNode.hasNonNull("promotions")) {
             GameDto game = mapper.readValue(gameNode.toString(), GameDto.class);
             game.setUrl(createUrl(
                     gameNode.findValue("productSlug").asText()
